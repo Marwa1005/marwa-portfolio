@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marwa El Mourid - Portfolio Gaming</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --hud-green: #00ff00;
+            --hud-blue: #0099ff;
+            --hud-red: #ff3333;
+            --hud-yellow: #ffff00;
+            --hud-purple: #cc00ff;
+            --dark-ui: #0a0a16;
+            --darker-ui: #050510;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(10, 30, 50, 0.8) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(50, 10, 30, 0.6) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(30, 10, 50, 0.7) 0%, transparent 50%),
+                var(--darker-ui);
+            color: white;
+            font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* HUD Gaming */
+        .game-hud {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(5, 5, 16, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--hud-green);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .player-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--hud-purple);
+            overflow: hidden;
+            box-shadow: 0 0 15px rgba(204, 0, 255, 0.5);
+        }
+
+        .player-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .health-bar {
+            width: 150px;
+            height: 20px;
+            background: rgba(255, 0, 0, 0.3);
+            border: 2px solid var(--hud-red);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .health-fill {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, var(--hud-red), #ff6666);
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .health-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: healthPulse 2s infinite;
+        }
+
+        @keyframes healthPulse {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-item {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 0, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .nav-item:hover::before {
+            left: 100%;
+        }
+
+        .nav-item:hover {
+            color: var(--hud-green);
+            border-color: var(--hud-green);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .xp-display {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .level-badge {
+            background: linear-gradient(45deg, var(--hud-purple), var(--hud-blue));
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(204, 0, 255, 0.5);
+        }
+
+        .xp-bar {
+            width: 150px;
+            height: 15px;
+            background: rgba(0, 153, 255, 0.3);
+            border: 2px solid var(--hud-blue);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .xp-fill {
+            height: 100%;
+            width: 75%;
+            background: linear-gradient(90deg, var(--hud-blue), #66aaff);
+            position: relative;
+        }
+
+        .xp-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: xpPulse 3s infinite;
+        }
+
+        @keyframes xpPulse {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .character-screen {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .character-model {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .avatar-container {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            border: 5px solid var(--hud-purple);
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(204, 0, 255, 0.5);
+            transition: var(--transition);
+        }
+
+        .avatar-container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 50px rgba(204, 0, 255, 0.7);
+        }
+
+        .avatar-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cv-download {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(45deg, var(--hud-red), var(--hud-purple));
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: var(--transition);
+            box-shadow: 0 0 20px rgba(255, 0, 60, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cv-download::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.7s ease;
+        }
+
+        .cv-download:hover::before {
+            left: 100%;
+        }
+
+        .cv-download:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 30px rgba(255, 0, 60, 0.6);
+        }
+
+        .character-stats {
+            flex: 1;
+            background: rgba(10, 10, 26, 0.8);
+            border: 3px solid var(--hud-blue);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 0 30px rgba(0, 153, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .character-stats::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(0, 153, 255, 0.1) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .character-stats:hover::before {
+            transform: translateX(100%);
+        }
+
+        .character-name {
+            font-size: 2.5rem;
+            color: var(--hud-yellow);
+            margin-bottom: 1rem;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .character-title {
+            font-size: 1.2rem;
+            color: var(--hud-green);
+            margin-bottom: 2rem;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 153, 255, 0.3);
+            transition: var(--transition);
+        }
+
+        .stat-item:hover {
+            background: rgba(0, 153, 255, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .stat-label {
+            color: var(--hud-blue);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .stat-value {
+            color: var(--hud-green);
+            font-weight: bold;
+        }
+
+        .character-bio {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+
+        /* Compétences Section */
+        .skills {
+            padding: 5rem 2rem;
+            background: rgba(5, 5, 16, 0.8);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--hud-yellow);
+            text-transform: uppercase;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--hud-yellow);
+        }
+
+        .skills-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .skill-category {
+            background: rgba(10, 10, 26, 0.8);
+            border: 2px solid var(--hud-green);
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-category::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(0, 255, 0, 0.1) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .skill-category:hover::before {
+            transform: translateX(100%);
+        }
+
+        .skill-category:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 255, 0, 0.3);
+        }
+
+        .category-title {
+            color: var(--hud-green);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .skill-tag {
+            background: rgba(0, 255, 0, 0.1);
+            color: var(--hud-green);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .skill-tag:hover {
+            background: rgba(0, 255, 0, 0.2);
+            transform: scale(1.05);
+        }
+
+        /* Section Projets Gaming - Version Simplifiée */
+        .projects-gaming {
+            padding: 4rem 2rem;
+            background: radial-gradient(circle at center, #0a0a16 0%, #050510 100%);
+        }
+
+        .game-interface {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(10, 10, 26, 0.95);
+            border: 3px solid var(--hud-purple);
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(204, 0, 255, 0.3);
+            overflow: hidden;
+        }
+
+        .game-header {
+            background: linear-gradient(135deg, var(--hud-purple), var(--hud-blue));
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--hud-green);
+        }
+
+        .game-title .section-title {
+            color: var(--hud-yellow);
+            margin-bottom: 0.5rem;
+        }
+
+        .game-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+        }
+
+        .game-stats {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-label {
+            display: block;
+            color: var(--hud-green);
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-value {
+            display: block;
+            color: var(--hud-yellow);
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+            background: rgba(10, 10, 26, 0.6);
+        }
+
+        .project-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 2px solid var(--hud-green);
+            border-radius: 15px;
+            padding: 1.5rem;
+            position: relative;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(0, 255, 0, 0.1) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .project-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 255, 0, 0.3);
+            border-color: var(--hud-yellow);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-rarity {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .card-rarity.rare {
+            background: linear-gradient(135deg, #0099ff, #00ccff);
+            color: white;
+        }
+
+        .card-rarity.epic {
+            background: linear-gradient(135deg, #cc00ff, #ff00cc);
+            color: white;
+        }
+
+        .card-rarity.legendary {
+            background: linear-gradient(135deg, #ff9900, #ffcc00);
+            color: black;
+        }
+
+        .card-rarity.mythic {
+            background: linear-gradient(135deg, #ff0000, #ff6600);
+            color: white;
+        }
+
+        .card-level {
+            color: var(--hud-yellow);
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .card-icon {
+            text-align: center;
+            margin: 1rem 0;
+            font-size: 3rem;
+            color: var(--hud-blue);
+        }
+
+        .card-content {
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .card-title {
+            color: var(--hud-yellow);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-description {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .card-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-name {
+            display: block;
+            color: var(--hud-green);
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .stat-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--hud-blue), var(--hud-green));
+            border-radius: 4px;
+        }
+
+        .project-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: auto;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            border: none;
+            font-size: 0.9rem;
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, var(--hud-green), var(--hud-blue));
+            color: white;
+        }
+
+        .action-btn.secondary {
+            background: linear-gradient(135deg, var(--hud-purple), var(--hud-red));
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Certificats Section */
+        .certificates {
+            padding: 5rem 2rem;
+            background: rgba(5, 5, 16, 0.8);
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .achievement-card {
+            background: rgba(10, 10, 26, 0.8);
+            border: 2px solid var(--hud-blue);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .achievement-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(0, 153, 255, 0.1) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .achievement-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .achievement-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 153, 255, 0.3);
+        }
+
+        .achievement-icon {
+            font-size: 3rem;
+            color: var(--hud-blue);
+            margin-bottom: 1rem;
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 5rem 2rem;
+        }
+
+        .contact-terminal {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(10, 10, 26, 0.9);
+            border: 3px solid var(--hud-green);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(0, 255, 0, 0.5);
+        }
+
+        .terminal-header {
+            background: var(--dark-ui);
+            padding: 1rem;
+            border-bottom: 2px solid var(--hud-green);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .terminal-button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .close { background: var(--hud-red); }
+        .minimize { background: var(--hud-yellow); }
+        .maximize { background: var(--hud-green); }
+
+        .terminal-body {
+            padding: 2rem;
+        }
+
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .contact-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .contact-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, var(--hud-green), var(--hud-blue));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--darker-ui);
+            padding: 2rem;
+            text-align: center;
+            border-top: 2px solid var(--hud-purple);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .social-link {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .social-link:hover {
+            background: var(--hud-purple);
+            transform: translateY(-5px);
+            border-color: var(--hud-yellow);
+        }
+
+        /* Scanlines */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.3;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .game-hud {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .character-screen {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .avatar-container {
+                width: 200px;
+                height: 200px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-menu {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .projects-grid {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+            
+            .project-actions {
+                flex-direction: column;
+            }
+            
+            .game-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="scanlines"></div>
+
+    <!-- HUD de jeu -->
+    <div class="game-hud">
+        <div class="player-info">
+            <div class="player-avatar">
+                <img src="dessin portfolio.jpg" alt="Marwa El Mourid">
+            </div>
+            <div class="health-bar">
+                <div class="health-fill" id="health"></div>
+            </div>
+        </div>
+        
+        <div class="nav-menu">
+            <a href="#accueil" class="nav-item">ACCUEIL</a>
+            <a href="#competences" class="nav-item">COMPÉTENCES</a>
+            <a href="#projets" class="nav-item">PROJETS</a>
+            <a href="#certificats" class="nav-item">CERTIFICATS</a>
+            <a href="#contact" class="nav-item">CONTACT</a>
+        </div>
+        
+        <div class="xp-display">
+            <div class="level-badge">NIV. 99</div>
+            <div class="xp-bar">
+                <div class="xp-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Hero -->
+    <section id="accueil" class="hero">
+        <div class="character-screen">
+            <div class="character-model">
+                <div class="avatar-container">
+                    <img src="dessin portfolio.jpg" alt="Marwa El Mourid">
+                </div>
+                <a href="my_resume__3_ (1).pdf" class="cv-download" target="_blank">
+                    <i class="fas fa-download"></i>
+                    TÉLÉCHARGER MON CV
+                </a>
+            </div>
+            <div class="character-stats">
+                <h1 class="character-name">Marwa El Mourid</h1>
+                <p class="character-title">Développeuse Full Stack</p>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">NIVEAU</div>
+                        <div class="stat-value">Développeuse Junior</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">SPÉCIALISATION</div>
+                        <div class="stat-value">Web & Applications</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">LOCALISATION</div>
+                        <div class="stat-value">Casablanca, Maroc</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">DISPONIBILITÉ</div>
+                        <div class="stat-value">En recherche active</div>
+                    </div>
+                </div>
+                
+                <p class="character-bio">
+                    Passionnée par le développement web et les nouvelles technologies, je crée des expériences digitales uniques 
+                    qui combinent fonctionnalité et design innovant.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Compétences -->
+    <section id="competences" class="skills">
+        <h2 class="section-title">Arbre de Compétences</h2>
+        <div class="skills-categories">
+            <div class="skill-category">
+                <h3 class="category-title">Front-End</h3>
+                <div class="skills-list">
+                    <span class="skill-tag">HTML/CSS</span>
+                    <span class="skill-tag">Bootstrap</span>
+                    <span class="skill-tag">JavaScript</span>
+                    <span class="skill-tag">React</span>
+                </div>
+            </div>
+            <div class="skill-category">
+                <h3 class="category-title">Back-End</h3>
+                <div class="skills-list">
+                    <span class="skill-tag">PHP</span>
+                    <span class="skill-tag">MySQL</span>
+                    <span class="skill-tag">PDO</span>
+                    <span class="skill-tag">Python</span>
+                    <span class="skill-tag">POO</span>
+                </div>
+            </div>
+            <div class="skill-category">
+                <h3 class="category-title">Outils</h3>
+                <div class="skills-list">
+                    <span class="skill-tag">Git / GitHub</span>
+                    <span class="skill-tag">Figma</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Projets Gaming - Version Simplifiée -->
+    <section id="projets" class="projects-gaming">
+        <div class="game-interface">
+            <div class="game-header">
+                <div class="game-title">
+                    <h2 class="section-title">INVENTAIRE DE PROJETS</h2>
+                    <div class="game-subtitle">Sélectionnez un projet pour voir les détails</div>
+                </div>
+                <div class="game-stats">
+                    <div class="stat">
+                        <span class="stat-label">PROJETS</span>
+                        <span class="stat-value">05/05</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="projects-grid">
+                <!-- Projet 1 -->
+                <div class="project-card" data-category="web" data-year="2024">
+                    <div class="card-header">
+                        
+                    </div>
+                    <div class="card-icon">
+                        <i class="fas fa-spray-can"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Site "Parfum"</h3>
+                        <p class="card-description">Site vitrine élégant et responsive pour présentation de collection de parfums.</p>
+                        <div class="card-stats">
+                            <div class="stat">
+                                <span class="stat-name">HTML/CSS</span>
+                                <div class="stat-bar">
+                                    <div class="stat-fill" style="width: 95%"></div>
+                                </div>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-name">Bootstrap</span>
+                                <div class="stat-bar">
+                                    <div class="stat-fill" style="width: 90%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-actions">
+                        <a href="https://marwaperfume.netlify.app" target="_blank" class="action-btn primary">
+                            <i class="fas fa-external-link-alt"></i>
+                            VISITER LE SITE
+                        </a>
+                        
+                    </div>
+                </div>
+
+                <!-- Projet 2 -->
+                <div class="project-card" data-category="web" data-year="2025">
+                    <div class="card-header">
+                        
+                    </div>
+                    <div class="card-icon">
+                        <i class="fas fa-cookie"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Site "Chocolat"</h3>
+                        <p class="card-description">Site e-commerce avec système CRUD complet pour la gestion des produits.</p>
+                        <div class="card-stats">
+                            <div class="stat">
+                                <span class="stat-name">PHP/MySQL</span>
+                                <div class="stat-bar">
+                                    <div class="stat-fill" style="width: 88%"></div>
+                                </div>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-name">JavaScript</span>
+                                <div class="stat-bar">
+                                    <div class="stat-fill" style="width: 85%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-actions">
+                        <a href="https://marwa1005.github.io/Chocolat/" target="_blank" class="action-btn primary">
+                            <i class="fas fa-external-link-alt"></i>
+                            VISITER LE SITE
+                        </a>
+                        <a href="https://github.com/Marwa1005/Chocolat" target="_blank" class="action-btn secondary">
+                            <i class="fab fa-github"></i>
+                            CODE SOURCE
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Projet 3 -->
+                <div class="project-card" data-category="app" data-year="2025">
+                    <div class="card-header">
+                        
+                    </div>
+                    <div class="card-icon">
+                        <i class="fas fa-university"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Gestion Universitaire</h3>
+                        <p class="card-description">Interface complète pour la gestion des étudiants et des cours.</p>
+                        <div class="card-stats">
+                            <div class="stat">
+                                <span class="stat-name">JavaScript</span>
+                                <div class="stat-bar">
+                                    <div class="stat-fill" style="width: 92%"></div>
+                                </div>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-name">php/html/css</span>
+                                <div class="stat-bar">
+                                    <div class="stat-fill" style="width: 88%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-actions">
+                        <a href="http://dev107-marwa.infinityfreeapp.com/" target="_blank" class="action-btn primary">
+                            <i class="fas fa-external-link-alt"></i>
+                            VISITER LE SITE
+                        </a>
+                        <a href="https://github.com/Marwa1005/gestion-cour" target="_blank" class="action-btn secondary">
+                            <i class="fab fa-github"></i>
+                            CODE SOURCE
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Projet 4 -->
+                <div class="project-card" data-category="desktop" data-year="2025">
+                    <div class="card-header">
+                        
+                    </div>
+                    <div class="card-icon">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Calculatrice</h3>
+                        <p class="card-description">Application desktop avec interface moderne développée en Python.</p>
+                        <div class="card-stats">
+                            <div class="stat">
+                                <span class="stat-name">Python</span>
+                                <div class="stat-bar">
+                                    <div class="stat-fill" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-name">Tkinter</span>
+                                <div class="stat-bar">
+                                    <div class="stat-fill" style="width: 80%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-actions">
+                        <a href="https://github.com/Marwa1005/calcul-tkinter" target="_blank" class="action-btn secondary">
+                            <i class="fab fa-github"></i>
+                            CODE SOURCE
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Projet 5 -->
+                <div class="project-card" data-category="game" data-year="2025">
+                    <div class="card-header">
+                        
+                    </div>
+                    <div class="card-icon">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Jeu Pygame</h3>
+                        <p class="card-description">Jeu interactif avec animations et collisions développé avec Pygame.</p>
+                        <div class="card-stats">
+                            <div class="stat">
+                                <span class="stat-name">Python</span>
+                                <div class="stat-bar">
+                                    <div class="stat-fill" style="width: 90%"></div>
+                                </div>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-name">Pygame</span>
+                                <div class="stat-bar">
+                                    <div class="stat-fill" style="width: 82%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-actions">
+                        <a href="https://github.com/Marwa1005/jeux" target="_blank" class="action-btn secondary">
+                            <i class="fab fa-github"></i>
+                            CODE SOURCE
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Certificats -->
+    <section id="certificats" class="certificates">
+        <h2 class="section-title">Achievements Débloqués</h2>
+        <div class="achievements-grid">
+            <div class="achievement-card">
+                <div class="achievement-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h3>Développement Web</h3>
+                <p>Certification en développement front-end et back-end</p>
+            </div>
+            <div class="achievement-card">
+                <div class="achievement-icon">
+                    <i class="fas fa-database"></i>
+                </div>
+                <h3>Base de Données</h3>
+                <p>MySQL et gestion de données</p>
+            </div>
+            <div class="achievement-card">
+                <div class="achievement-icon">
+                    <i class="fab fa-python"></i>
+                </div>
+                <h3>Python Avancé</h3>
+                <p>Programmation orientée objet et applications</p>
+            </div>
+            <div class="achievement-card">
+                <div class="achievement-icon">
+                    <i class="fas fa-gamepad"></i>
+                </div>
+                <h3>Développement de Jeux</h3>
+                <p>Création de jeux avec Pygame</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Contact -->
+    <section id="contact" class="contact">
+        <h2 class="section-title">Centre de Communications</h2>
+        <div class="contact-terminal">
+            <div class="terminal-header">
+                <div class="terminal-button close"></div>
+                <div class="terminal-button minimize"></div>
+                <div class="terminal-button maximize"></div>
+                <span style="margin-left: 1rem; color: var(--hud-green);">contact_system.exe</span>
+            </div>
+            <div class="terminal-body">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <h3>Email</h3>
+                            <p>marwaelmourid05@gmail.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div>
+                            <h3>Téléphone</h3>
+                            <p>+212 762 708 290</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div>
+                            <h3>Localisation</h3>
+                            <p>Ifriquia n22, Casablanca, Maroc</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <a href="https://github.com/Marwa1005" target="_blank" class="contact-icon">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <div>
+                            <h3>GitHub</h3>
+                            <p>Marwa1005</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <a href="https://www.linkedin.com/in/marwa-elmourid-b8a44a33a/" target="_blank" class="contact-icon">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <div>
+                            <h3>LinkedIn</h3>
+                            <p>MarwaElmourid</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <div>
+                            <h3>Portfolio</h3>
+                            <p>marwa1005.github.io/marwa</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="social-links">
+            <a href="https://github.com/Marwa1005" class="social-link">
+                <i class="fab fa-github"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/marwa-elmourid-b8a44a33a/" class="social-link">
+                <i class="fab fa-linkedin-in"></i>
+            </a>
+        </div>
+        <p>© Marwa El Mourid</p>
+        <p>En recherche de nouvelles expériences professionnelles</p>
+    </footer>
+
+    <script>
+        // Animation de la barre de vie
+        const healthBar = document.getElementById('health');
+        let health = 100;
+        let healthDirection = -1;
+        
+        function updateHealth() {
+            health += healthDirection * 0.3;
+            
+            if (health <= 70) healthDirection = 1;
+            if (health >= 100) healthDirection = -1;
+            
+            healthBar.style.width = health + '%';
+            
+            if (health > 70) {
+                healthBar.style.background = 'linear-gradient(90deg, var(--hud-green), #66ff66)';
+            } else if (health > 30) {
+                healthBar.style.background = 'linear-gradient(90deg, var(--hud-yellow), #ffff66)';
+            } else {
+                healthBar.style.background = 'linear-gradient(90deg, var(--hud-red), #ff6666)';
+            }
+            
+            requestAnimationFrame(updateHealth);
+        }
+        
+        updateHealth();
+
+        // Animation des éléments au défilement
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.skill-category, .achievement-card, .project-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
